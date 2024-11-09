@@ -21,20 +21,21 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Soluti
 
     let mut iteration = 0;
     let mut last_improved_iteration = 0;
+    let max_no_to_remove_in_iteration = (input.people.len() / 10).min(input.people.len() / 2);
     loop {
         iteration +=1;
         if iteration - last_improved_iteration > 200 {
             println!("Terminated with no improvement");
             break;
         }
-        if iteration % 100 == 0 && Utc::now() - start > time_limit {
+        if Utc::now() - start > time_limit {
             println!("Terminated with time limit");
             break
         }
         let current_cost = calculator.solution_value(&solution);
         let mut new_solution = solution.clone();
 
-        let no_people_to_move = thread_rng().gen_range(2..10);
+        let no_people_to_move = thread_rng().gen_range(2..max_no_to_remove_in_iteration);
 
         let mut people_to_move = vec![];
 

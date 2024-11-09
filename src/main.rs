@@ -22,9 +22,9 @@ fn main() {
         let problem : ProblemDescription = serde_json::from_str(&file_content).unwrap();
         let calculator = ObjectiveValueCalculator::new(&problem);
 
-        println!("Running algorithm for {}", filename_path.display());
+        println!("--- Running algorithm for {}", filename_path.display());
         let result = table_problem::algorithm_base::solve(&problem, chrono::Duration::seconds(1));
-        println!("Result value {}  details {:?}", calculator.solution_value(&result) ,result);
+        println!("Result value {}", calculator.solution_value(&result));
     }
 
     println!("Successfully calculated");
