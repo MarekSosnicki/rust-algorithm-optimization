@@ -78,7 +78,7 @@ fn main() {
                         ((p1 + 1)..no_of_people)
                             .filter_map(move |p2| {
                                 if thread_rng().gen_range(0.0..1.0) > 0.3 {
-                                    Some((p2, thread_rng().gen_range(-1.0..1.0)))
+                                    Some((p2, thread_rng().gen_range(0.0..2.0)))
                                 } else {
                                     None
                                 }
