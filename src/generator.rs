@@ -31,7 +31,7 @@ pub fn generate_problem(no_of_people: usize, no_of_table_days: usize) -> Problem
         people: (0..no_of_people)
             .map(|id| Person {
                 id,
-                visits: (0..thread_rng().gen_range(0..3))
+                visits: (0..thread_rng().gen_range(0..6))
                     .map(|_| PersonVisit {
                         table_id: thread_rng().gen_range(0..no_of_tables),
                         at: start_date - Duration::days(thread_rng().gen_range(1..30)),
