@@ -1,7 +1,7 @@
 use chrono::Utc;
 use rand::{Rng, thread_rng};
 use rand::prelude::IteratorRandom;
-use crate::problem::{ObjectiveValueCalculator, PersonId, ProblemDescription, Solution, TableDayId};
+use crate::problem::{MAX_PEOPLE_FOR_TABLE, ObjectiveValueCalculator, PersonId, ProblemDescription, Solution, TableDayId};
 
 pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Solution{
     let start = Utc::now();
@@ -14,7 +14,6 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Soluti
     };
 
     // initial solution - find minimum cost
-
     insert_into_best_positions(&calculator, &mut solution, input.people.iter().map(|p|p.id));
 
     println!("Base Solution cost {}", calculator.solution_value(&solution));
@@ -78,8 +77,7 @@ fn insert_into_best_positions(calculator: &ObjectiveValueCalculator, solution: &
                     best_insertion_description = Some((*table_day_id,0));
                     best_insertion_value = insertion_value
                 }
-
-            } else {
+            } else if people.len() < MAX_PEOPLE_FOR_TABLE {
                 let current_cost = calculator.table_value(*table_day_id, people);
                 for insertion_index in 0..people.len() {
                     let mut updated_people = people.clone();
