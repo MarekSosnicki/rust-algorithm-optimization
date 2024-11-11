@@ -1,7 +1,8 @@
 use std::fs;
 use std::path::PathBuf;
 use clap::Parser;
-use table_problem::problem::{ObjectiveValueCalculator, ProblemDescription};
+use table_problem::objective_value_calculator::v1::ObjectiveValueCalculator;
+use table_problem::problem::{ProblemDescription};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]

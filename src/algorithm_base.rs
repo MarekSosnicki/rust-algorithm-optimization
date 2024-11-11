@@ -1,12 +1,13 @@
 use chrono::Utc;
 use rand::{Rng, thread_rng};
 use rand::prelude::IteratorRandom;
-use crate::problem::{MAX_PEOPLE_FOR_TABLE, ObjectiveValueCalculator, PersonId, ProblemDescription, Solution, TableDayId};
+use crate::objective_value_calculator::v1::ObjectiveValueCalculator;
+use crate::problem::{MAX_PEOPLE_FOR_TABLE, PersonId, ProblemDescription, Solution, TableDayId};
 
 pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Solution{
     let start = Utc::now();
 
-    let calculator = ObjectiveValueCalculator::new(&input);
+    let calculator =  ObjectiveValueCalculator::new(&input);
 
 
     let mut solution = Solution{
