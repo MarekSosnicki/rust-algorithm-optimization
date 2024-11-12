@@ -51,3 +51,22 @@ time:   [1.1651 µs 1.1880 µs 1.2119 µs]
 change: [+9.7665% +12.706% +15.646%] (p = 0.00 < 0.05)
 
 Performance regressed so back to v2
+
+
+## V4 HashMap -> AHashMap
+
+objective function 1 person
+time:   [162.19 ns 162.54 ns 162.96 ns]
+change: [-23.733% -23.139% -22.569%] (p = 0.00 < 0.05)
+
+objective function 2 people
+time:   [281.72 ns 284.34 ns 287.04 ns]
+change: [-30.581% -29.204% -27.938%] (p = 0.00 < 0.05)
+
+objective function 4 people
+time:   [581.76 ns 587.35 ns 593.31 ns]
+change: [-30.005% -28.786% -27.569%] (p = 0.00 < 0.05)
+
+objective function 6 people
+time:   [836.95 ns 846.83 ns 856.61 ns]
+change: [-24.033% -22.554% -21.124%] (p = 0.00 < 0.05)
