@@ -50,8 +50,8 @@ impl<'a> ObjectiveValueCalculator<'a> {
             let next_seat = (seat + 1) % people.len();
 
             result += self.relations
-                .get(&person.id)
-                .and_then(|v| v.get(&people[next_seat].id))
+                .get(&person.id.min(people[next_seat].id))
+                .and_then(|v| v.get(&person.id.max(people[next_seat].id)))
                 .cloned()
                 .unwrap_or_default();
 
