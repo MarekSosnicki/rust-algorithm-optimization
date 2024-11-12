@@ -70,3 +70,29 @@ change: [-30.005% -28.786% -27.569%] (p = 0.00 < 0.05)
 objective function 6 people
 time:   [836.95 ns 846.83 ns 856.61 ns]
 change: [-24.033% -22.554% -21.124%] (p = 0.00 < 0.05)
+
+
+## V5 Inner structs
+
+objective function 1 person
+time:   [140.66 ns 141.30 ns 142.03 ns]
+change: [-13.953% -13.381% -12.868%] (p = 0.00 < 0.05)
+Performance has improved.
+
+objective function 2 people
+time:   [246.34 ns 250.52 ns 255.51 ns]
+change: [-17.951% -16.040% -14.119%] (p = 0.00 < 0.05)
+
+objective function 4 people
+time:   [580.83 ns 604.51 ns 634.44 ns]
+change: [-16.655% -13.799% -10.523%] (p = 0.00 < 0.05)
+
+
+objective function 6 people
+time:   [772.28 ns 785.71 ns 799.99 ns]
+change: [-11.331% -8.6524% -6.0633%] (p = 0.00 < 0.05)
+
+
+## V6 No allocations
+
+

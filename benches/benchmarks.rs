@@ -2,7 +2,7 @@ use criterion::{criterion_group, criterion_main, Criterion};
 use itertools::Itertools;
 use rand::{Rng, thread_rng};
 use table_problem::generator::generate_problem;
-use table_problem::objective_value_calculator::v3::ObjectiveValueCalculator;
+use table_problem::objective_value_calculator::v5::ObjectiveValueCalculator;
 
 
 fn objective_function_v1_benchmark(c: &mut Criterion) {
