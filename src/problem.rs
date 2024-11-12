@@ -49,6 +49,3 @@ pub struct TableDay {
 pub struct Solution {
     pub solution_per_table: HashMap<TableDayId, Vec<PersonId>>,
 }
-
-
-

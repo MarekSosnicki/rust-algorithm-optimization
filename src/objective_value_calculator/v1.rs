@@ -1,7 +1,7 @@
-use std::collections::{BTreeMap, HashMap};
+use crate::problem::{Person, PersonId, ProblemDescription, Solution, TableDay, TableDayId};
 use chrono::Datelike;
 use itertools::Itertools;
-use crate::problem::{Person, PersonId, ProblemDescription, Solution, TableDay, TableDayId};
+use std::collections::{BTreeMap, HashMap};
 
 pub struct ObjectiveValueCalculator<'a> {
     people_map: HashMap<PersonId, &'a Person>,
@@ -26,14 +26,13 @@ impl<'a> ObjectiveValueCalculator<'a> {
         solution
             .solution_per_table
             .iter()
-            .map(|(table_day_id, people_ids)| {
-                self.table_value(*table_day_id, &people_ids)
-            })
+            .map(|(table_day_id, people_ids)| self.table_value(*table_day_id, &people_ids))
             .sum()
     }
 
     pub fn table_value(&self, table_day_id: TableDayId, people_ids: &[PersonId]) -> f64 {
-        let table = self.table_map
+        let table = self
+            .table_map
             .get(&table_day_id)
             .expect("Failed to get table details");
         let people: Vec<&Person> = people_ids
@@ -41,19 +40,18 @@ impl<'a> ObjectiveValueCalculator<'a> {
             .map(|id| *self.people_map.get(id).expect("Failed to get person id"))
             .collect_vec();
 
-        if people.is_empty() {
-            return 0.0;
-        }
-
         let mut result = 0.0;
         for (seat, person) in people.iter().enumerate() {
-            let next_seat = (seat + 1) % people.len();
+            if people.len() != 1 {
+                let next_seat = (seat + 1) % people.len();
 
-            result += self.relations
-                .get(&person.id.min(people[next_seat].id))
-                .and_then(|v| v.get(&person.id.max(people[next_seat].id)))
-                .cloned()
-                .unwrap_or_default();
+                result += self
+                    .relations
+                    .get(&person.id.min(people[next_seat].id))
+                    .and_then(|v| v.get(&person.id.max(people[next_seat].id)))
+                    .cloned()
+                    .unwrap_or_default();
+            }
 
             if let Some(most_recent_visit) = person.visits.iter().max_by_key(|v| v.at) {
                 result += (((table.date - most_recent_visit.at).num_days() - 15) as f64 / 15.0)

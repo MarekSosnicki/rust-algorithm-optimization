@@ -1,8 +1,8 @@
+use clap::Parser;
 use std::fs;
 use std::path::PathBuf;
-use clap::Parser;
 use table_problem::objective_value_calculator::v1::ObjectiveValueCalculator;
-use table_problem::problem::{ProblemDescription};
+use table_problem::problem::ProblemDescription;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -10,7 +10,6 @@ struct Args {
     #[arg(short, long)]
     input_dir: PathBuf,
 }
-
 
 fn main() {
     let args = Args::parse();
@@ -20,7 +19,7 @@ fn main() {
     for file in dir {
         let filename_path = file.unwrap().path();
         let file_content = std::fs::read_to_string(&filename_path).unwrap();
-        let problem : ProblemDescription = serde_json::from_str(&file_content).unwrap();
+        let problem: ProblemDescription = serde_json::from_str(&file_content).unwrap();
         let calculator = ObjectiveValueCalculator::new(&problem);
 
         println!("--- Running algorithm for {}", filename_path.display());

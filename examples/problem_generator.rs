@@ -1,10 +1,9 @@
 use clap::Parser;
-use itertools::{Itertools};
+use itertools::Itertools;
 use rand::{thread_rng, Rng};
 use std::path::PathBuf;
 use table_problem::generator::generate_problem;
 use table_problem::problem::MAX_PEOPLE_FOR_TABLE;
-
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -50,4 +49,3 @@ fn main() {
 
     println!("Successfully generated {} problems", args.no_of_problems);
 }
-

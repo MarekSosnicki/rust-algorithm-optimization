@@ -1,8 +1,8 @@
+use crate::problem::{Person, PersonVisit, ProblemDescription, TableDay, MAX_PEOPLE_FOR_TABLE};
 use chrono::{Duration, TimeZone, Utc};
 use itertools::{iproduct, Itertools};
-use rand::{Rng, thread_rng};
 use rand::prelude::SliceRandom;
-use crate::problem::{MAX_PEOPLE_FOR_TABLE, Person, PersonVisit, ProblemDescription, TableDay};
+use rand::{thread_rng, Rng};
 
 pub fn generate_problem(no_of_people: usize, no_of_table_days: usize) -> ProblemDescription {
     let start_date = Utc.with_ymd_and_hms(2024, 3, 3, 0, 0, 0).unwrap();
@@ -11,21 +11,14 @@ pub fn generate_problem(no_of_people: usize, no_of_table_days: usize) -> Problem
     let no_of_tables = (no_of_people / MAX_PEOPLE_FOR_TABLE / 2).max(3);
 
     let days = (0..7).map(|day| start_date + Duration::days((day + 1) as i64));
-    let mut all_possible_day_tables = iproduct!(days,  0..no_of_tables)
-        .collect_vec();
+    let mut all_possible_day_tables = iproduct!(days, 0..no_of_tables).collect_vec();
     all_possible_day_tables.shuffle(&mut thread_rng());
-
-
 
     let problem_data = ProblemDescription {
         tables: all_possible_day_tables
             .into_iter()
             .enumerate()
-            .map(|(id, (date, table_id))| TableDay {
-                id,
-                table_id,
-                date,
-            })
+            .map(|(id, (date, table_id))| TableDay { id, table_id, date })
             .take(no_of_table_days)
             .collect(),
         people: (0..no_of_people)

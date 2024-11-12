@@ -1,9 +1,10 @@
 use crate::problem::{
     Person, PersonId, ProblemDescription, Solution, TableDay, TableDayId, TableId,
+    MAX_PEOPLE_FOR_TABLE,
 };
 use ahash::{AHashMap, AHashSet};
 use chrono::{DateTime, Datelike, Utc, Weekday};
-use itertools::Itertools;
+use smallvec::SmallVec;
 
 /// PersonInner and TableDayInner structs introduction
 pub struct ObjectiveValueCalculator {
@@ -82,20 +83,15 @@ impl ObjectiveValueCalculator {
             .table_map
             .get(&table_day_id)
             .expect("Failed to get table details");
-        let people: Vec<&PersonInner> = people_ids
+        let people: SmallVec<[&PersonInner; MAX_PEOPLE_FOR_TABLE]> = people_ids
             .iter()
             .map(|id| self.people_map.get(id).expect("Failed to get person id"))
-            .collect_vec();
-
-        if people.is_empty() {
-            return 0.0;
-        }
+            .collect();
 
         let mut result = 0.0;
         for (seat, person) in people.iter().enumerate() {
             if people.len() != 1 {
                 let next_seat = (seat + 1) % people.len();
-
                 result += self
                     .relations
                     .get(&person.id.min(people[next_seat].id))
@@ -103,7 +99,6 @@ impl ObjectiveValueCalculator {
                     .cloned()
                     .unwrap_or_default();
             }
-
             if let Some(most_recent_visit) = person.most_recent_visit {
                 result += (((table.date - most_recent_visit).num_days() - 15) as f64 / 15.0)
                     .min(-1.0)
@@ -112,12 +107,10 @@ impl ObjectiveValueCalculator {
                 // Has not visited for more than 30 days
                 result += 1.0
             }
-
             if !person.visited_tables.contains(&table.table_id) {
                 // Add value if never visited this table in the past
                 result += 0.5;
             }
-
             if !person.visited_weekdays.contains(&table.weekday) {
                 // Add value if never visited this table in this weekday
                 result += 0.5;

@@ -2,55 +2,55 @@
 
 ## BASELINE (V1)
 objective function 1 person
-time:   [204.05 ns 204.49 ns 204.98 ns]
+time:   [213.16 ns 213.70 ns 214.26 ns]
 
 objective function 2 people
-time:   [429.81 ns 437.50 ns 447.39 ns]
+time:   [535.07 ns 540.79 ns 547.81 ns]
 
 objective function 4 people
-time:   [2.1401 µs 2.1673 µs 2.1948 µs]
+time:   [928.76 ns 935.68 ns 943.17 ns]
 
 objective function 6 people
-time:   [1.3546 µs 1.3912 µs 1.4289 µs]
-
+time:   [1.3090 µs 1.3188 µs 1.3297 µs]
 
 ## V2 - BTreeMap -> HashMap
 
 objective function 1 person
-time:   [188.01 ns 188.42 ns 188.87 ns]
-change: [-8.5500% -8.1454% -7.8001%] (p = 0.00 < 0.05)
+time:   [204.63 ns 205.38 ns 206.57 ns]
+change: [-4.6456% -4.0301% -3.4489%] (p = 0.00 < 0.05)
 
 objective function 2 people
-time:   [329.35 ns 332.14 ns 335.14 ns]
-change: [-25.583% -24.389% -23.136%] (p = 0.00 < 0.05)
+time:   [469.66 ns 472.44 ns 475.36 ns]
+change: [-19.349% -17.620% -15.935%] (p = 0.00 < 0.05)
 
 objective function 4 people
-time:   [750.28 ns 762.37 ns 774.53 ns]
-change: [-65.481% -64.618% -63.689%] (p = 0.00 < 0.05)
+time:   [842.74 ns 856.59 ns 869.65 ns]
+change: [-10.489% -9.2086% -8.0499%] (p = 0.00 < 0.05)
 
 objective function 6 people
-time:   [1.0561 µs 1.0953 µs 1.1315 µs]
-change: [-27.130% -24.484% -21.768%] (p = 0.00 < 0.05)
+time:   [1.0786 µs 1.0884 µs 1.0983 µs]
+change: [-19.369% -18.140% -16.997%] (p = 0.00 < 0.05)
 
 ## V3 HashMap flattened
 
 objective function 1 person
-time:   [187.74 ns 188.12 ns 188.57 ns]
-change: [-0.1799% +0.1224% +0.4861%] (p = 0.47 > 0.05)
+time:   [185.40 ns 185.63 ns 185.86 ns]
+change: [-9.9313% -9.4972% -9.1032%] (p = 0.00 < 0.05)
 
 objective function 2 people
-time:   [367.09 ns 369.93 ns 373.02 ns]
-change: [+7.9259% +9.2831% +10.623%] (p = 0.00 < 0.05)
+time:   [441.82 ns 443.70 ns 445.83 ns]
+change: [-6.5465% -5.9125% -5.2900%] (p = 0.00 < 0.05)
+
 
 objective function 4 people
-time:   [811.69 ns 817.23 ns 822.74 ns]
-change: [+3.1214% +5.4686% +7.7936%] (p = 0.00 < 0.05)
+time:   [821.07 ns 832.62 ns 847.07 ns]
+change: [-0.1935% +2.0329% +4.3734%] (p = 0.09 > 0.05)
 
 objective function 6 people
-time:   [1.1651 µs 1.1880 µs 1.2119 µs]
-change: [+9.7665% +12.706% +15.646%] (p = 0.00 < 0.05)
+time:   [1.0937 µs 1.1001 µs 1.1069 µs]
+change: [+0.3302% +1.4489% +2.5565%] (p = 0.01 < 0.05)
 
-Performance regressed so back to v2
+Performance has not improved so back to v2
 
 
 ## V4 HashMap -> AHashMap
