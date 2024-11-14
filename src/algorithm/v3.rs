@@ -67,6 +67,8 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Algori
 
     let mut iteration = 0;
     let mut last_improved_iteration = 0;
+    let mut current_cost = solution.cost(&calculator);
+
     let max_no_to_remove_in_iteration = (input.people.len() / 20).max(input.people.len().min(5));
     loop {
         iteration += 1;
@@ -78,7 +80,6 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Algori
             println!("Terminated with time limit");
             break;
         }
-        let current_cost = solution.cost(&calculator);
         let mut new_solution = solution.clone();
 
         let no_people_to_move = thread_rng().gen_range(2..max_no_to_remove_in_iteration);
@@ -105,6 +106,7 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Algori
         if new_cost > current_cost {
             solution = new_solution;
             last_improved_iteration = iteration;
+            current_cost = new_cost;
         }
     }
 

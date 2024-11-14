@@ -1,4 +1,4 @@
-use std::hash::{Hash, Hasher};
+use std::hash::Hasher;
 
 use ahash::AHashMap;
 use chrono::Utc;
@@ -12,24 +12,44 @@ use crate::problem::{
     AlgorithmResults, MAX_PEOPLE_FOR_TABLE, PersonId, ProblemDescription, Solution, TableDayId,
 };
 
+type TableDaySolutionHash = u64;
+
 #[derive(Clone, PartialEq, Eq)]
 struct TableDaySolution {
     table_day_id: TableDayId,
     people: SmallVec<[PersonId; MAX_PEOPLE_FOR_TABLE]>,
+    hash: TableDaySolutionHash,
 }
 
-impl Hash for TableDaySolution {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        state.write_usize(self.table_day_id);
-        if let Some(min_person_position) = self.people.iter().position_min() {
-            for index in 0..self.people.len() {
-                state.write_usize(self.people[(index + min_person_position) % self.people.len()])
-            }
+impl TableDaySolution {
+    fn new(table_day_id: TableDayId, people: SmallVec<[PersonId; MAX_PEOPLE_FOR_TABLE]>) -> Self {
+        let hash = calculate_table_day_hash(table_day_id, &people);
+        Self {
+            table_day_id,
+            people,
+            hash,
         }
+    }
+
+    fn remove_person_on_index(&mut self, index: usize) -> PersonId {
+        let result = self.people.remove(index);
+        self.hash = calculate_table_day_hash(self.table_day_id, &self.people);
+        result
     }
 }
 
-type InsertionCache = AHashMap<TableDaySolution, AHashMap<PersonId, Option<f64>>>;
+fn calculate_table_day_hash(table_day_id: TableDayId, people: &[PersonId]) -> TableDaySolutionHash {
+    let mut hasher = fxhash::FxHasher64::default();
+    hasher.write_usize(table_day_id);
+    if let Some(min_person_position) = people.iter().position_min() {
+        for index in 0..people.len() {
+            hasher.write_usize(people[(index + min_person_position) % people.len()])
+        }
+    }
+    hasher.finish()
+}
+
+type InsertionCache = AHashMap<TableDaySolutionHash, AHashMap<PersonId, Option<f64>>>;
 
 #[derive(Clone)]
 struct SolutionInner {
@@ -67,10 +87,7 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Algori
         solution_per_table: input
             .tables
             .iter()
-            .map(|t| TableDaySolution {
-                table_day_id: t.id,
-                people: smallvec![],
-            })
+            .map(|t| TableDaySolution::new(t.id, smallvec![]))
             .collect(),
     };
 
@@ -90,6 +107,7 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Algori
     let mut last_improved_iteration = 0;
     let max_no_to_remove_in_iteration = (input.people.len() / 20).max(input.people.len().min(5));
     let mut current_cost = solution.cost(&calculator);
+
     loop {
         iteration += 1;
         if iteration - last_improved_iteration > 200 {
@@ -117,7 +135,7 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Algori
             let chosen_person_index = (0..table_day.people.len())
                 .choose(&mut thread_rng())
                 .unwrap();
-            people_to_move.push(table_day.people.remove(chosen_person_index))
+            people_to_move.push(table_day.remove_person_on_index(chosen_person_index))
         }
         insert_into_best_positions(
             &calculator,
@@ -159,7 +177,7 @@ fn insert_into_best_positions(
         for (table_day_index, table_day_solution) in solution.solution_per_table.iter().enumerate()
         {
             let value_optional = insertion_cache
-                .get(&table_day_solution)
+                .get(&table_day_solution.hash)
                 .and_then(|cache_for_table_day| cache_for_table_day.get(&person_to_insert).cloned())
                 .unwrap_or_else(|| {
                     let value_optional = insert_into_best_table_position(
@@ -169,7 +187,7 @@ fn insert_into_best_positions(
                     )
                     .map(|(_, v)| v);
                     insertion_cache
-                        .entry(table_day_solution.clone())
+                        .entry(table_day_solution.hash)
                         .or_default()
                         .insert(person_to_insert, value_optional);
                     value_optional
@@ -183,13 +201,16 @@ fn insert_into_best_positions(
         }
 
         let insertion_table = best_insertion_table.expect("No possible insertions?");
-        solution.solution_per_table[insertion_table] = insert_into_best_table_position(
-            calculator,
-            &solution.solution_per_table[insertion_table],
-            person_to_insert,
-        )
-        .unwrap()
-        .0;
+        solution.solution_per_table[insertion_table] = TableDaySolution::new(
+            solution.solution_per_table[insertion_table].table_day_id,
+            insert_into_best_table_position(
+                calculator,
+                &solution.solution_per_table[insertion_table],
+                person_to_insert,
+            )
+            .unwrap()
+            .0,
+        );
     }
 }
 
@@ -197,21 +218,15 @@ fn insert_into_best_table_position(
     calculator: &ObjectiveValueCalculator,
     table_day_solution: &TableDaySolution,
     person_to_insert: PersonId,
-) -> Option<(TableDaySolution, f64)> {
+) -> Option<(SmallVec<[PersonId; MAX_PEOPLE_FOR_TABLE]>, f64)> {
     if table_day_solution.people.is_empty() {
         let people = smallvec![person_to_insert];
         let insertion_value = calculator.table_value(table_day_solution.table_day_id, &people);
-        return Some((
-            TableDaySolution {
-                table_day_id: table_day_solution.table_day_id,
-                people,
-            },
-            insertion_value,
-        ));
+        return Some((people, insertion_value));
     } else if table_day_solution.people.len() < MAX_PEOPLE_FOR_TABLE {
         let current_cost =
             calculator.table_value(table_day_solution.table_day_id, &table_day_solution.people);
-        let mut best_solution: Option<(TableDaySolution, f64)> = None;
+        let mut best_solution = None;
         for insertion_index in 0..table_day_solution.people.len() {
             let mut updated_people = table_day_solution.people.clone();
             updated_people.insert(insertion_index, person_to_insert);
@@ -219,13 +234,7 @@ fn insert_into_best_table_position(
                 .table_value(table_day_solution.table_day_id, &updated_people)
                 - current_cost;
             if insertion_value > best_solution.as_ref().map(|(_, v)| *v).unwrap_or(f64::MIN) {
-                best_solution = Some((
-                    TableDaySolution {
-                        table_day_id: table_day_solution.table_day_id,
-                        people: updated_people,
-                    },
-                    insertion_value,
-                ))
+                best_solution = Some((updated_people, insertion_value))
             }
         }
         best_solution
