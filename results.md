@@ -96,3 +96,12 @@ change: [-11.331% -8.6524% -6.0633%] (p = 0.00 < 0.05)
 ## V6 No allocations
 
 
+
+
+
+### Algorithm improvement
+# V1:
+medium: Avg iterations 204, avg elapsed 1002ms
+
+# V2
+medium: 

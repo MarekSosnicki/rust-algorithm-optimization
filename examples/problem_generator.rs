@@ -1,5 +1,4 @@
 use clap::Parser;
-use itertools::Itertools;
 use rand::{thread_rng, Rng};
 use std::path::PathBuf;
 use table_problem::generator::generate_problem;

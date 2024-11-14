@@ -49,3 +49,10 @@ pub struct TableDay {
 pub struct Solution {
     pub solution_per_table: HashMap<TableDayId, Vec<PersonId>>,
 }
+
+#[derive(Debug, Clone)]
+pub struct AlgorithmResults {
+    pub solution: Solution,
+    pub no_of_iterations: usize,
+    pub elapsed: chrono::Duration
+}

@@ -1,10 +1,14 @@
-use crate::objective_value_calculator::v1::ObjectiveValueCalculator;
-use crate::problem::{PersonId, ProblemDescription, Solution, TableDayId, MAX_PEOPLE_FOR_TABLE};
 use chrono::Utc;
+use rand::{Rng, thread_rng};
 use rand::prelude::IteratorRandom;
-use rand::{thread_rng, Rng};
 
-pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Solution {
+use crate::objective_value_calculator::v6::ObjectiveValueCalculator;
+use crate::problem::{
+    AlgorithmResults, MAX_PEOPLE_FOR_TABLE, PersonId, ProblemDescription, Solution, TableDayId,
+};
+
+/// ObjectiveValueCalculator switch to v6
+pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> AlgorithmResults {
     let start = Utc::now();
 
     let calculator = ObjectiveValueCalculator::new(&input);
@@ -27,7 +31,7 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Soluti
 
     let mut iteration = 0;
     let mut last_improved_iteration = 0;
-    let max_no_to_remove_in_iteration = (input.people.len() / 10).min(input.people.len() / 2);
+    let max_no_to_remove_in_iteration = (input.people.len() / 20).max(input.people.len().min(5));
     loop {
         iteration += 1;
         if iteration - last_improved_iteration > 200 {
@@ -77,7 +81,11 @@ pub fn solve(input: &ProblemDescription, time_limit: chrono::Duration) -> Soluti
 
     println!("Finished after {} iterations", iteration);
 
-    solution
+    AlgorithmResults {
+        solution,
+        no_of_iterations: iteration,
+        elapsed: Utc::now() - start,
+    }
 }
 
 fn insert_into_best_positions(
