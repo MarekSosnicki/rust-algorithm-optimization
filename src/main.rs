@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use table_problem::algorithm::v3::solve;
+use table_problem::algorithm::v4::solve;
 use table_problem::objective_value_calculator::v1::ObjectiveValueCalculator;
 use table_problem::problem::ProblemDescription;
 

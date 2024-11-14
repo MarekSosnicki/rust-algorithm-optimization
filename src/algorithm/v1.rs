@@ -109,7 +109,7 @@ fn insert_into_best_positions(
                     let mut updated_people = people.clone();
                     updated_people.insert(insertion_index, person_id);
                     let insertion_value =
-                        calculator.table_value(*table_day_id, &[person_id]) - current_cost;
+                        calculator.table_value(*table_day_id, &updated_people) - current_cost;
                     if insertion_value > best_insertion_value {
                         best_insertion_description = Some((*table_day_id, 0));
                         best_insertion_value = insertion_value
