@@ -54,5 +54,5 @@ pub struct Solution {
 pub struct AlgorithmResults {
     pub solution: Solution,
     pub no_of_iterations: usize,
-    pub elapsed: chrono::Duration
+    pub elapsed: chrono::Duration,
 }

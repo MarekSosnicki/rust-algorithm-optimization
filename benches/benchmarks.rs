@@ -2,10 +2,11 @@ use criterion::{criterion_group, criterion_main, Criterion};
 use itertools::Itertools;
 use rand::seq::SliceRandom;
 use rand::{thread_rng, Rng};
-use table_problem::generator::generate_problem;
-use table_problem::objective_value_calculator::v6::ObjectiveValueCalculator;
 
-fn objective_function_v1_benchmark(c: &mut Criterion) {
+use table_problem::generator::generate_problem;
+use table_problem::objective_value_calculator::v1::ObjectiveValueCalculator;
+
+fn objective_function_benchmark(c: &mut Criterion) {
     let no_of_people = 1200;
     let no_of_tables = 220;
     let problem = generate_problem(1200, 220);
@@ -60,5 +61,5 @@ fn objective_function_v1_benchmark(c: &mut Criterion) {
     });
 }
 
-criterion_group!(benches, objective_function_v1_benchmark);
+criterion_group!(benches, objective_function_benchmark);
 criterion_main!(benches);

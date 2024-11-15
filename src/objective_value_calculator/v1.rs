@@ -1,7 +1,9 @@
-use crate::problem::{Person, PersonId, ProblemDescription, Solution, TableDay, TableDayId};
+use std::collections::{BTreeMap, HashMap};
+
 use chrono::Datelike;
 use itertools::Itertools;
-use std::collections::{BTreeMap, HashMap};
+
+use crate::problem::{Person, PersonId, ProblemDescription, Solution, TableDay, TableDayId};
 
 pub struct ObjectiveValueCalculator<'a> {
     people_map: HashMap<PersonId, &'a Person>,
@@ -44,39 +46,35 @@ impl<'a> ObjectiveValueCalculator<'a> {
         for (seat, person) in people.iter().enumerate() {
             if people.len() != 1 {
                 let next_seat = (seat + 1) % people.len();
-
-                result += self
-                    .relations
-                    .get(&person.id.min(people[next_seat].id))
-                    .and_then(|v| v.get(&person.id.max(people[next_seat].id)))
-                    .cloned()
-                    .unwrap_or_default();
+                result += self.get_relation_score(&person.id, &people[next_seat].id);
             }
-
             if let Some(most_recent_visit) = person.visits.iter().max_by_key(|v| v.at) {
                 result += (((table.date - most_recent_visit.at).num_days() - 15) as f64 / 15.0)
                     .min(-1.0)
                     .max(1.0)
             } else {
-                // Has not visited for more than 30 days
                 result += 1.0
             }
-
             if !person.visits.iter().any(|v| v.table_id == table.table_id) {
-                // Add value if never visited this table in the past
                 result += 0.5;
             }
-
             if !person
                 .visits
                 .iter()
                 .any(|v| v.at.weekday() == table.date.weekday())
             {
-                // Add value if never visited this table in this weekday
                 result += 0.5;
             }
         }
 
         result
+    }
+
+    fn get_relation_score(&self, person_1_id: &PersonId, person_2_id: &PersonId) -> f64 {
+        self.relations
+            .get(&person_1_id.min(person_2_id))
+            .and_then(|v| v.get(&person_1_id.max(person_2_id)))
+            .cloned()
+            .unwrap_or_default()
     }
 }

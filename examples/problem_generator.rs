@@ -1,6 +1,8 @@
+use std::path::PathBuf;
+
 use clap::Parser;
 use rand::{thread_rng, Rng};
-use std::path::PathBuf;
+
 use table_problem::generator::generate_problem;
 use table_problem::problem::MAX_PEOPLE_FOR_TABLE;
 
@@ -36,7 +38,6 @@ fn main() {
             problem_id, no_of_people, no_of_table_days
         );
         let problem_data = generate_problem(no_of_people, no_of_table_days);
-
         let json_string = serde_json::to_string(&problem_data).unwrap();
 
         std::fs::write(

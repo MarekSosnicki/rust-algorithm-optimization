@@ -3,13 +3,13 @@ use std::hash::Hasher;
 use ahash::AHashMap;
 use chrono::Utc;
 use itertools::Itertools;
-use rand::{Rng, thread_rng};
 use rand::prelude::IteratorRandom;
+use rand::{thread_rng, Rng};
 use smallvec::{smallvec, SmallVec};
 
 use crate::objective_value_calculator::v6::ObjectiveValueCalculator;
 use crate::problem::{
-    AlgorithmResults, MAX_PEOPLE_FOR_TABLE, PersonId, ProblemDescription, Solution, TableDayId,
+    AlgorithmResults, PersonId, ProblemDescription, Solution, TableDayId, MAX_PEOPLE_FOR_TABLE,
 };
 
 type TableDaySolutionHash = u64;

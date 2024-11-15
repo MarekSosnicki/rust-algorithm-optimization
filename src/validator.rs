@@ -1,6 +1,6 @@
 use ahash::HashSet;
 
-use crate::problem::{MAX_PEOPLE_FOR_TABLE, PersonId, ProblemDescription, Solution};
+use crate::problem::{PersonId, ProblemDescription, Solution, MAX_PEOPLE_FOR_TABLE};
 
 pub fn validate_solution(input: &ProblemDescription, solution: &Solution) {
     assert_eq!(
