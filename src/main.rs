@@ -6,6 +6,7 @@ use clap::Parser;
 use table_problem::algorithm::v5::solve;
 use table_problem::objective_value_calculator::v1::ObjectiveValueCalculator;
 use table_problem::problem::ProblemDescription;
+use table_problem::validator::validate_solution;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -32,6 +33,7 @@ fn main() {
             "Result value {}",
             calculator.solution_value(&result.solution)
         );
+        validate_solution(&problem, &result.solution);
         results.push(result);
     }
 
